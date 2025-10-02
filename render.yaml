@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: blast-api
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: NCBI_API_KEY
+        value: e62a5f1dcd925f307a6b5027aa57e5ec0508
+
