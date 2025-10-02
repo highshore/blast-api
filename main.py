@@ -28,16 +28,13 @@ def root():
 @app.post("/blast-submit")
 async def blast_submit(req: BlastSubmitRequest):
     try:
-        api_key = os.getenv("NCBI_API_KEY")
-        
         result_handle = NCBIWWW.qblast(
             program=req.program,
             database=req.database,
             sequence=req.query,
             expect=req.expect,
             hitlist_size=req.hitlistSize,
-            format_type="XML",
-            api_key=api_key
+            format_type="XML"
         )
         
         xml_result = result_handle.read()
