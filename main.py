@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from Bio.Blast import NCBIWWW, NCBIXML
 import os
+from io import StringIO
 
 app = FastAPI(title="BLAST API for GammaFold")
 
@@ -48,7 +49,7 @@ async def blast_submit(req: BlastSubmitRequest):
         xml_result = result_handle.read()
         result_handle.close()
         
-        blast_records = NCBIXML.parse(xml_result)
+        blast_records = NCBIXML.parse(StringIO(xml_result))
         record = next(blast_records)
         
         results_text = f"BLAST Results for {req.program}\n"
