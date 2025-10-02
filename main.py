@@ -34,6 +34,12 @@ async def blast_submit(req: BlastSubmitRequest):
         if query.startswith('>'):
             lines = query.split('\n')
             sequence = ''.join(line.strip() for line in lines[1:] if line.strip() and not line.startswith('>'))
+        elif '|' in query and (query.startswith('sp|') or query.startswith('gi|') or query.startswith('ref|')):
+            parts = query.split('|')
+            if len(parts) >= 2:
+                sequence = parts[1]
+            else:
+                sequence = query.replace('\n', '').replace(' ', '')
         else:
             sequence = query.replace('\n', '').replace(' ', '')
         
