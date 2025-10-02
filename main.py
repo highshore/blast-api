@@ -28,10 +28,18 @@ def root():
 @app.post("/blast-submit")
 async def blast_submit(req: BlastSubmitRequest):
     try:
+        query = req.query.strip()
+        
+        if query.startswith('>'):
+            lines = query.split('\n')
+            sequence = ''.join(line.strip() for line in lines[1:] if line.strip() and not line.startswith('>'))
+        else:
+            sequence = query.replace('\n', '').replace(' ', '')
+        
         result_handle = NCBIWWW.qblast(
             program=req.program,
             database=req.database,
-            sequence=req.query,
+            sequence=sequence,
             expect=req.expect,
             hitlist_size=req.hitlistSize,
             format_type="XML"
@@ -45,7 +53,7 @@ async def blast_submit(req: BlastSubmitRequest):
         
         results_text = f"BLAST Results for {req.program}\n"
         results_text += f"Database: {req.database}\n"
-        results_text += f"Query: {req.query[:50]}...\n\n"
+        results_text += f"Query: {sequence[:50]}...\n\n"
         
         if record.alignments:
             results_text += f"Found {len(record.alignments)} hits\n\n"
